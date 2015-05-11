@@ -419,8 +419,20 @@ module ActiveShipping
           # I don't know all of the options that UPS supports for labels
           # so I'm going with something very simple for now.
           xml.LabelSpecification do
-            xml.LabelPrintMethod do
-              xml.Code('GIF')
+            if options[:label_print_method].present? && options[:label_stock_size_height].present? && options[:label_stock_size_width].present?
+              #support for thermal printer
+              xml.LabelStockSize do
+                xml.Height(options[:label_stock_size_height])
+                xml.Width(options[:label_stock_size_width])
+              end
+              xml.LabelPrintMethod do
+                xml.Code(options[:label_print_method])
+              end
+            else
+              #normal printer
+              xml.LabelPrintMethod do
+                xml.Code('GIF')
+              end
             end
             xml.HTTPUserAgent('Mozilla/4.5') # hmmm
             xml.LabelImageFormat('GIF') do
